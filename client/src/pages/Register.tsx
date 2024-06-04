@@ -1,10 +1,11 @@
-import React, { ChangeEvent, FormEvent, useState } from 'react'
+import React, { ChangeEvent, FormEvent, useContext, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import isValidEmail from '../utils/validateEmail'
 import { useMutation } from '@tanstack/react-query'
 import { registerUser } from '../services/auth'
 import toast from 'react-hot-toast'
 import { AxiosError } from 'axios'
+import { UserContext } from '../context/userContext'
 
 export type FormFieldType = {
   name: string
@@ -20,6 +21,7 @@ type ErrorObjType = {
 
 const Register: React.FC = (): React.ReactElement => {
   const navigate = useNavigate()
+  const { setUser } = useContext(UserContext)
   const [formData, setFormData] = useState<FormFieldType>({
     name: '',
     email: '',
@@ -33,7 +35,9 @@ const Register: React.FC = (): React.ReactElement => {
 
   const registerMutation = useMutation({
     mutationFn: registerUser,
-    onSuccess() {
+    onSuccess(data) {
+      localStorage.setItem('buxtrack_user', JSON.stringify(data.data))
+      setUser(data.data)
       toast.success('User registered successfully!')
       navigate('/')
     },

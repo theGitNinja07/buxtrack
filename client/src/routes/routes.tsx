@@ -10,15 +10,19 @@ import Report from '../pages/Report'
 import Login from '../pages/Login'
 import Register from '../pages/Register'
 
+import Private from '../components/Private'
+
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/" element={<App />}>
-      <Route index element={<Home />} />
+      <Route path="/" element={<Private />}>
+        <Route path="/" element={<Home />} />
+        <Route path="/income" element={<Income />} />
+        <Route path="/expenses" element={<Expenses />} />
+        <Route path="/report" element={<Report />} />
+      </Route>
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
-      <Route path="/income" element={<Income />} />
-      <Route path="/expenses" element={<Expenses />} />
-      <Route path="/report" element={<Report />} />
       <Route path="*" element={<NotFound />} />
     </Route>
   )

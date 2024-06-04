@@ -10,27 +10,32 @@ const registerUser = async (data: RegisterData) => {
 }
 
 const loginUser = async (data: LoginData) => {
-  const res = await api.post('/auth/login', data)
+  const res = await api.post<BaseResponse<{ _id: string; name: string; email: string }>>('/auth/login', data)
   return res.data
 }
 
 const getUser = async () => {
-  const res = await api.get('/auth/profile')
+  const res = await api.get<BaseResponse<{ _id: string; name: string; email: string; monthlyBudget: number }>>(
+    '/auth/profile'
+  )
   return res.data
 }
 
 const logoutUser = async () => {
-  const res = await api.get('/auth/logout')
+  const res = await api.get<BaseResponse<null>>('/auth/logout')
   return res.data
 }
 
 const updateUser = async (data: UserData) => {
-  const res = await api.put('/auth/profile', data)
+  const res = await api.put<BaseResponse<{ _id: string; name: string; email: string; monthlyBudget: number }>>(
+    '/auth/profile',
+    data
+  )
   return res.data
 }
 
 const deleteUser = async () => {
-  const res = await api.put('/auth/profile')
+  const res = await api.put<BaseResponse<null>>('/auth/profile')
   return res.data
 }
 

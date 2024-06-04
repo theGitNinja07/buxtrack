@@ -1,9 +1,6 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-
-type NavbarProps = {
-  isLoggedIn: boolean
-}
+import { UserContext } from '../context/userContext'
 
 const routes = [
   { name: 'Budget', link: '/' },
@@ -12,10 +9,12 @@ const routes = [
   { name: 'Report', link: '/report' }
 ]
 
-const Navbar: React.FC<NavbarProps> = (props): React.ReactElement => {
+const Navbar: React.FC = (): React.ReactElement => {
   const navigate = useNavigate()
+  const { user } = useContext(UserContext)
+
   const handleClick = () => {
-    if (props.isLoggedIn) {
+    if (user) {
       console.log('Sign out')
     } else {
       navigate('/login')
@@ -25,7 +24,7 @@ const Navbar: React.FC<NavbarProps> = (props): React.ReactElement => {
   return (
     <div className="mx-auto navbar bg-base-200 max-w-screen-2xl">
       <div className="navbar-start">
-        {props.isLoggedIn && (
+        {user && (
           <>
             <div className="dropdown">
               <div tabIndex={0} role="button" className="btn btn-ghost lg:hidden">
@@ -59,7 +58,7 @@ const Navbar: React.FC<NavbarProps> = (props): React.ReactElement => {
           </span>
         </Link>
       </div>
-      {props.isLoggedIn && (
+      {user && (
         <>
           <div className="hidden navbar-center lg:flex">
             <ul className="px-1 menu menu-horizontal">
@@ -73,8 +72,8 @@ const Navbar: React.FC<NavbarProps> = (props): React.ReactElement => {
         </>
       )}
       <div className="navbar-end">
-        <button onClick={handleClick} className={`btn btn-outline ${props.isLoggedIn ? 'btn-error' : 'btn-success'}`}>
-          {props.isLoggedIn ? (
+        <button onClick={handleClick} className={`btn btn-outline ${user ? 'btn-error' : 'btn-success'}`}>
+          {user ? (
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
@@ -105,7 +104,7 @@ const Navbar: React.FC<NavbarProps> = (props): React.ReactElement => {
               />
             </svg>
           )}
-          {props.isLoggedIn ? 'Signout' : 'Signin'}
+          {user ? 'Signout' : 'Signin'}
         </button>
       </div>
     </div>

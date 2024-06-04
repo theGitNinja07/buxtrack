@@ -29,14 +29,11 @@ const Home: React.FC = (): React.ReactElement => {
         <h1 className="text-2xl font-semibold">Hello, User</h1>
       </div>
       <div>
-        {data?.data.map((item) => {
+        {data?.data.map((item, idx) => {
           return (
-            <>
-              <div>
-                {item.name} - {item.age}
-              </div>
-              <br />
-            </>
+            <div key={idx}>
+              {item.name} - {item.age}
+            </div>
           )
         })}
         this is the new code
