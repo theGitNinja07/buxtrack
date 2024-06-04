@@ -16,10 +16,10 @@ const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/" element={<App />}>
       <Route path="/" element={<Private />}>
-        <Route path="/" element={<Home />} />
-        <Route path="/income" element={<Income />} />
-        <Route path="/expenses" element={<Expenses />} />
-        <Route path="/report" element={<Report />} />
+        <Route index element={<Home />} />
+        <Route path="income" element={<Income />} />
+        <Route path="expenses" element={<Expenses />} />
+        <Route path="report" element={<Report />} />
       </Route>
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />

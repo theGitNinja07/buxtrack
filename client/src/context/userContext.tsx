@@ -9,11 +9,13 @@ type User = {
 export type UserContextType = {
   user: User | null
   setUser: React.Dispatch<React.SetStateAction<User | null>>
+  loading: boolean
 }
 
 export const UserContext = createContext<UserContextType>({
   user: null,
-  setUser: () => {}
+  setUser: () => {},
+  loading: true
 })
 
 type Props = {
@@ -22,6 +24,7 @@ type Props = {
 
 const UserContextProvider: React.FC<Props> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null)
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     const value = localStorage.getItem('buxtrack_user')
@@ -30,13 +33,16 @@ const UserContextProvider: React.FC<Props> = ({ children }) => {
     } else {
       setUser(null)
     }
+
+    setLoading(false)
   }, [])
 
   return (
     <UserContext.Provider
       value={{
         user,
-        setUser
+        setUser,
+        loading
       }}
     >
       {children}
