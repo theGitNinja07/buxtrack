@@ -1,8 +1,12 @@
 import React, { ChangeEvent, FormEvent, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import isValidEmail from '../utils/validateEmail'
+import { useMutation } from '@tanstack/react-query'
+import { loginUser } from '../services/auth'
+import toast from 'react-hot-toast'
+import { AxiosError } from 'axios'
 
-type FormFieldType = {
+export type FormFieldType = {
   email: string
   password: string
 }
@@ -13,6 +17,7 @@ type ErrorObjType = {
 }
 
 const Login: React.FC = (): React.ReactElement => {
+  const navigate = useNavigate()
   const [formData, setFormData] = useState<FormFieldType>({
     email: '',
     password: ''
@@ -22,13 +27,30 @@ const Login: React.FC = (): React.ReactElement => {
     password: null
   })
 
+  const loginMutation = useMutation({
+    mutationFn: loginUser,
+    onSuccess() {
+      toast.success('User registered successfully!')
+      navigate('/')
+    },
+    onError(error) {
+      if (error instanceof AxiosError) {
+        toast.error(error.response?.data.message)
+      } else if (error instanceof Error) {
+        toast.error(error.message)
+      } else {
+        console.log(error)
+      }
+    }
+  })
+
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setFormData((prev) => {
       return { ...prev, [e.target.name]: e.target.value }
     })
   }
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     if (formData.email.trim().length === 0 || !isValidEmail(formData.email)) {
       setError({
@@ -42,7 +64,7 @@ const Login: React.FC = (): React.ReactElement => {
       })
     } else {
       setError({ email: null, password: null })
-      console.log(formData)
+      loginMutation.mutate(formData)
     }
   }
 
@@ -115,11 +137,13 @@ const Login: React.FC = (): React.ReactElement => {
                 />
               </svg>
 
-              <span className="leading-3">error is here</span>
+              <span className="leading-3">{error.password}</span>
             </p>
           )}
         </div>
-        <button className="w-full text-white btn btn-success">Login</button>
+        <button className="w-full text-white btn btn-success" disabled={loginMutation.isPending}>
+          {loginMutation.isPending ? <span className="loading loading-spinner"></span> : 'Login'}
+        </button>
       </form>
       <p className="mt-3">
         Don't have an account?{' '}

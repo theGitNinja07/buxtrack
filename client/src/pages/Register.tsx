@@ -1,8 +1,12 @@
 import React, { ChangeEvent, FormEvent, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import isValidEmail from '../utils/validateEmail'
+import { useMutation } from '@tanstack/react-query'
+import { registerUser } from '../services/auth'
+import toast from 'react-hot-toast'
+import { AxiosError } from 'axios'
 
-type FormFieldType = {
+export type FormFieldType = {
   name: string
   email: string
   password: string
@@ -15,6 +19,7 @@ type ErrorObjType = {
 }
 
 const Register: React.FC = (): React.ReactElement => {
+  const navigate = useNavigate()
   const [formData, setFormData] = useState<FormFieldType>({
     name: '',
     email: '',
@@ -24,6 +29,23 @@ const Register: React.FC = (): React.ReactElement => {
     email: null,
     name: null,
     password: null
+  })
+
+  const registerMutation = useMutation({
+    mutationFn: registerUser,
+    onSuccess() {
+      toast.success('User registered successfully!')
+      navigate('/')
+    },
+    onError(error) {
+      if (error instanceof AxiosError) {
+        toast.error(error.response?.data.message)
+      } else if (error instanceof Error) {
+        toast.error(error.message)
+      } else {
+        console.log(error)
+      }
+    }
   })
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -54,7 +76,7 @@ const Register: React.FC = (): React.ReactElement => {
       })
     } else {
       setError({ name: null, email: null, password: null })
-      console.log(formData)
+      registerMutation.mutate(formData)
     }
   }
 
@@ -165,7 +187,9 @@ const Register: React.FC = (): React.ReactElement => {
             </p>
           )}
         </div>
-        <button className="w-full text-white btn btn-success">Register</button>
+        <button className="w-full text-white btn btn-success" disabled={registerMutation.isPending}>
+          {registerMutation.isPending ? <span className="loading loading-spinner"></span> : 'Register'}
+        </button>
       </form>
       <p className="mt-3">
         Already have an account?{' '}
