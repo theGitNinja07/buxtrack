@@ -1,5 +1,5 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 
 type NavbarProps = {
   isLoggedIn: boolean
@@ -13,8 +13,17 @@ const routes = [
 ]
 
 const Navbar: React.FC<NavbarProps> = (props): React.ReactElement => {
+  const navigate = useNavigate()
+  const handleClick = () => {
+    if (props.isLoggedIn) {
+      console.log('Sign out')
+    } else {
+      navigate('/login')
+    }
+  }
+
   return (
-    <div className="navbar bg-base-200 max-w-screen-2xl mx-auto">
+    <div className="mx-auto navbar bg-base-200 max-w-screen-2xl">
       <div className="navbar-start">
         {props.isLoggedIn && (
           <>
@@ -22,7 +31,7 @@ const Navbar: React.FC<NavbarProps> = (props): React.ReactElement => {
               <div tabIndex={0} role="button" className="btn btn-ghost lg:hidden">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  className="h-5 w-5"
+                  className="w-5 h-5"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
@@ -43,7 +52,7 @@ const Navbar: React.FC<NavbarProps> = (props): React.ReactElement => {
             </div>
           </>
         )}
-        <Link to="/" className="btn btn-ghost text-xl">
+        <Link to="/" className="text-xl btn btn-ghost">
           💵{' '}
           <span>
             <span className="text-green-500">Bux</span>Track
@@ -52,8 +61,8 @@ const Navbar: React.FC<NavbarProps> = (props): React.ReactElement => {
       </div>
       {props.isLoggedIn && (
         <>
-          <div className="navbar-center hidden lg:flex">
-            <ul className="menu menu-horizontal px-1">
+          <div className="hidden navbar-center lg:flex">
+            <ul className="px-1 menu menu-horizontal">
               {routes.map((route, index) => (
                 <li key={index}>
                   <Link to={route.link}>{route.name}</Link>
@@ -64,7 +73,7 @@ const Navbar: React.FC<NavbarProps> = (props): React.ReactElement => {
         </>
       )}
       <div className="navbar-end">
-        <button className={`btn btn-outline ${props.isLoggedIn ? 'btn-error' : 'btn-success'}`}>
+        <button onClick={handleClick} className={`btn btn-outline ${props.isLoggedIn ? 'btn-error' : 'btn-success'}`}>
           {props.isLoggedIn ? (
             <svg
               xmlns="http://www.w3.org/2000/svg"
