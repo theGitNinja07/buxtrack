@@ -128,18 +128,15 @@ const Income: React.FC = () => {
               <span>Category</span>
             </div>
             <select
-              value={category}
               onChange={(e: ChangeEvent<HTMLSelectElement>) => setCategory(e.target.value)}
               className="select select-bordered"
             >
               <option disabled selected>
                 Pick one
               </option>
-              <option>Star Wars</option>
-              <option>Harry Potter</option>
-              <option>Lord of the Rings</option>
-              <option>Planet of the Apes</option>
-              <option>Star Trek</option>
+              <option>Salary</option>
+              <option>Freelance</option>
+              <option>Gift/Reward</option>
             </select>
           </label>
           <label className="w-full max-w-full form-control">
@@ -147,18 +144,15 @@ const Income: React.FC = () => {
               <span>Payment Method</span>
             </div>
             <select
-              value={paymentMethod}
               onChange={(e: ChangeEvent<HTMLSelectElement>) => setPaymentMethod(e.target.value)}
               className="select select-bordered"
             >
               <option disabled selected>
                 Pick one
               </option>
-              <option>Star Wars</option>
-              <option>Harry Potter</option>
-              <option>Lord of the Rings</option>
-              <option>Planet of the Apes</option>
-              <option>Star Trek</option>
+              <option>Bank Transfer</option>
+              <option>Cash</option>
+              <option>UPI</option>
             </select>
           </label>
         </div>
