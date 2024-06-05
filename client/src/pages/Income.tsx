@@ -1,9 +1,7 @@
 import { format } from 'date-fns'
 import React from 'react'
 
-type IncomeProps = {}
-
-const Income: React.FC<IncomeProps> = () => {
+const Income: React.FC = () => {
   return (
     <main className="relative px-8 mx-auto max-w-screen-2xl">
       <div className="my-8">

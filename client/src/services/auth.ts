@@ -22,7 +22,7 @@ const getUser = async () => {
 }
 
 const logoutUser = async () => {
-  const res = await api.get<BaseResponse<null>>('/auth/logout')
+  const res = await api.post<BaseResponse<null>>('/auth/logout')
   return res.data
 }
 

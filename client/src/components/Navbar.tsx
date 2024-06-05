@@ -1,21 +1,34 @@
 import React, { useContext } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { UserContext } from '../context/userContext'
+import { useMutation } from '@tanstack/react-query'
+import { logoutUser } from '../services/auth'
+import toast from 'react-hot-toast'
 
 const routes = [
   { name: 'Budget', link: '/' },
   { name: 'Income', link: '/income' },
   { name: 'Expenses', link: '/expenses' },
-  { name: 'Report', link: '/report' }
+  { name: 'Report', link: '/report' },
+  { name: 'Profile', link: '/profile' }
 ]
 
 const Navbar: React.FC = (): React.ReactElement => {
   const navigate = useNavigate()
-  const { user } = useContext(UserContext)
+  const { user, setUser } = useContext(UserContext)
+
+  const logoutMutation = useMutation({
+    mutationFn: logoutUser,
+    onSuccess() {
+      toast.success('Logout successful!')
+      setUser(null)
+      localStorage.removeItem('buxtrack_user')
+    }
+  })
 
   const handleClick = () => {
     if (user) {
-      console.log('Sign out')
+      logoutMutation.mutate()
     } else {
       navigate('/login')
     }

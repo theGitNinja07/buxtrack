@@ -94,6 +94,7 @@ const Register: React.FC = (): React.ReactElement => {
             <span className="block mb-1 max-w-max">Full Name</span>
             <input
               id="name"
+              type="text"
               className="w-full input input-bordered"
               onChange={handleChange}
               name="name"
@@ -128,6 +129,7 @@ const Register: React.FC = (): React.ReactElement => {
             <span className="block mb-1 max-w-max">Email</span>
             <input
               id="email"
+              type="email"
               className="w-full input input-bordered"
               onChange={handleChange}
               name="email"
@@ -162,6 +164,7 @@ const Register: React.FC = (): React.ReactElement => {
             <span className="block mb-1 max-w-max">Password</span>
             <input
               id="password"
+              type="password"
               className="w-full input input-bordered"
               onChange={handleChange}
               name="password"
@@ -191,7 +194,7 @@ const Register: React.FC = (): React.ReactElement => {
             </p>
           )}
         </div>
-        <button className="w-full text-white btn btn-success" disabled={registerMutation.isPending}>
+        <button type="submit" className="w-full text-white btn btn-success" disabled={registerMutation.isPending}>
           {registerMutation.isPending ? <span className="loading loading-spinner"></span> : 'Register'}
         </button>
       </form>

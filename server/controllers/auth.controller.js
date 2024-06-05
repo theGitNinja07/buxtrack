@@ -69,7 +69,8 @@ const getLoggedInUser = asyncHandler(async (req, res) => {
       data: {
         _id: user._id,
         name: user.name,
-        email: user.email
+        email: user.email,
+        monthlyBudget: user.monthlyBudget
       }
     })
   } else {
