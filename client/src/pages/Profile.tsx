@@ -65,10 +65,17 @@ const Profile: React.FC = (): React.ReactElement => {
       return toast.error('Monthly budget is invalid')
     } else if (formData.monthlyBudget === 0) {
       return toast.error('Monthly Budget cannot be zero')
-    } else if (formData.password.trim().length < 8) {
+    } else if (formData.password !== '' && formData.password.trim().length < 8) {
       return toast.error('Password length should be atleast 8 characters')
     } else {
-      updateMutation.mutate(formData)
+      if (formData.password === '') {
+        updateMutation.mutate({
+          name: formData.name,
+          monthlyBudget: formData.monthlyBudget
+        })
+      } else {
+        updateMutation.mutate(formData)
+      }
     }
   }
 
@@ -97,20 +104,33 @@ const Profile: React.FC = (): React.ReactElement => {
         <div className="flex items-center gap-3">
           <p className="font-medium text-gray-600 ">Your profile details</p>
           <button className="btn btn-square btn-outline" onClick={changeMode}>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth={1.5}
-              stroke="currentColor"
-              className="size-6"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.832 19.82a4.5 4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 0 1 1.13-1.897L16.863 4.487Zm0 0L19.5 7.125"
-              />
-            </svg>
+            {mode === 'edit' ? (
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="currentColor"
+                className="size-6"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
+              </svg>
+            ) : (
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="currentColor"
+                className="size-6"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.832 19.82a4.5 4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 0 1 1.13-1.897L16.863 4.487Zm0 0L19.5 7.125"
+                />
+              </svg>
+            )}
           </button>
         </div>
 
@@ -126,6 +146,7 @@ const Profile: React.FC = (): React.ReactElement => {
                 disabled={mode === 'read'}
                 type="text"
                 onChange={handleChange}
+                autoComplete="off"
               />
             </label>
           </div>
@@ -152,8 +173,10 @@ const Profile: React.FC = (): React.ReactElement => {
                 name="password"
                 value={formData.password}
                 disabled={mode === 'read'}
-                type="number"
+                type="password"
                 onChange={handleChange}
+                autoComplete="off"
+                placeholder="Enter your new password"
               />
             </label>
           </div>

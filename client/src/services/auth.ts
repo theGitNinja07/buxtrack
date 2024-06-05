@@ -26,7 +26,7 @@ const logoutUser = async () => {
   return res.data
 }
 
-const updateUser = async (data: UserData) => {
+const updateUser = async (data: Partial<UserData>) => {
   const res = await api.put<BaseResponse<{ _id: string; name: string; email: string; monthlyBudget: number }>>(
     '/auth/profile',
     data
