@@ -44,6 +44,28 @@ const createTransaction = asyncHandler(async (req, res) => {
   }
 })
 
+const getAllTransactions = asyncHandler(async (req, res) => {
+  const user = await User.findOne({ _id: req.user._id })
+
+  const transactions = await Transaction.find({ user: user })
+
+  if (user) {
+    if (transactions)
+      res.status(200).json({
+        status: 'OK',
+        message: 'transactions fetched successfully!',
+        data: transactions
+      })
+    else {
+      res.status(401)
+      throw new Error('data not found')
+    }
+  } else {
+    res.status(404)
+    throw new Error('User not found')
+  }
+})
+
 const getAllIncomes = asyncHandler(async (req, res) => {
   const user = await User.findOne({ _id: req.user._id })
 
@@ -139,4 +161,12 @@ const getTransaction = asyncHandler(async (req, res) => {
   })
 })
 
-export { createTransaction, getAllExpenses, getAllIncomes, getTransaction, updateTransaction, removeTransaction }
+export {
+  createTransaction,
+  getAllExpenses,
+  getAllIncomes,
+  getTransaction,
+  updateTransaction,
+  removeTransaction,
+  getAllTransactions
+}

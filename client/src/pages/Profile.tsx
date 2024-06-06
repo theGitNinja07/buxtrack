@@ -1,13 +1,15 @@
 import { useMutation, useQuery } from '@tanstack/react-query'
-import React, { ChangeEvent, FormEvent, useEffect, useState } from 'react'
+import React, { ChangeEvent, FormEvent, useContext, useEffect, useState } from 'react'
 import { getUser, updateUser } from '../services/auth'
 import Loader from '../components/Loader'
 import { UserData } from '../types/UserData'
 import { AxiosError } from 'axios'
 import toast from 'react-hot-toast'
+import { UserContext } from '../context/userContext'
 
 const Profile: React.FC = (): React.ReactElement => {
   const [mode, setMode] = useState<'read' | 'edit'>('read')
+  const { setUser } = useContext(UserContext)
 
   const { data, isLoading, isError } = useQuery({
     queryKey: ['user'],
@@ -34,6 +36,17 @@ const Profile: React.FC = (): React.ReactElement => {
         name: data.data.name,
         monthlyBudget: data.data.monthlyBudget,
         password: ''
+      })
+      const newUserData = {
+        _id: data.data._id,
+        name: data.data.name,
+        email: data.data.email
+      }
+      localStorage.setItem('buxtrack_user', JSON.stringify(newUserData))
+      setUser({
+        _id: data.data._id,
+        name: data.data.name,
+        email: data.data.email
       })
       setMode('read')
     },

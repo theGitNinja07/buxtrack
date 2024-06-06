@@ -24,6 +24,11 @@ const createTransaction = async (data: T) => {
   return res.data
 }
 
+const getAllTransactions = async () => {
+  const res = await api.get<BaseResponse<Array<Transaction>>>('/transaction')
+  return res.data
+}
+
 const deleteTransaction = async (id: string) => {
   const res = await api.delete('/transaction/' + id)
   return res.data
@@ -39,4 +44,4 @@ const getAllIncomes = async () => {
   return res.data
 }
 
-export { createTransaction, getAllExpenses, getAllIncomes, deleteTransaction }
+export { createTransaction, getAllExpenses, getAllIncomes, deleteTransaction, getAllTransactions }

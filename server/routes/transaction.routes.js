@@ -3,6 +3,7 @@ import {
   createTransaction,
   getAllExpenses,
   getAllIncomes,
+  getAllTransactions,
   getTransaction,
   removeTransaction,
   updateTransaction
@@ -11,6 +12,7 @@ import express from 'express'
 
 const router = express.Router()
 
+router.route('/').get(protect, getAllTransactions)
 router.route('/create').post(protect, createTransaction)
 router.route('/incomes').get(protect, getAllIncomes)
 router.route('/expenses').get(protect, getAllExpenses)
