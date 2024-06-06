@@ -92,29 +92,12 @@ const removeTransaction = asyncHandler(async (req, res) => {
   const user = await User.findById(req.user._id)
 
   if (user) {
-    user.name = req.body.name || user.name
-    user.email = req.body.email || user.email
-    user.monthlyBudget = req.body.monthlyBudget || user.monthlyBudget
-
-    if (req.body.password) {
-      user.password = req.body.password
-    }
-
-    if (req.body.monthlyBudget) {
-      user.monthlyBudget = req.body.monthlyBudget
-    }
-
-    const updatedUser = await user.save()
+    await Transaction.findByIdAndDelete(req.params.id)
 
     res.status(200).json({
       status: 'OK',
-      message: 'User updated successfully',
-      data: {
-        _id: updatedUser._id,
-        name: updatedUser.name,
-        email: updatedUser.email,
-        monthlyBudget: updatedUser.monthlyBudget
-      }
+      message: 'transaction deleted successfully',
+      data: null
     })
   } else {
     res.status(404)

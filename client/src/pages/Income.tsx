@@ -3,7 +3,7 @@ import React, { ChangeEvent, useState } from 'react'
 import Modal from '../components/Model'
 import CustomInput from '../components/CustomInput'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { createTransaction, getAllIncomes } from '../services/transaction'
+import { createTransaction, deleteTransaction, getAllIncomes } from '../services/transaction'
 import toast from 'react-hot-toast'
 import { AxiosError } from 'axios'
 import Loader from '../components/Loader'
@@ -21,6 +21,24 @@ const Income: React.FC = () => {
   })
 
   const queryClient = useQueryClient()
+
+  const deleteMutation = useMutation({
+    mutationFn: deleteTransaction,
+    onSuccess(data) {
+      toast.success(data.message)
+      queryClient.invalidateQueries()
+    },
+    onError(error) {
+      if (error instanceof AxiosError) {
+        toast.error(error.response?.data.message)
+      } else if (error instanceof Error) {
+        toast.error(error.message)
+      } else {
+        console.log('transaction not created!')
+        console.log(error)
+      }
+    }
+  })
 
   const createMutation = useMutation({
     mutationFn: createTransaction,
@@ -116,7 +134,11 @@ const Income: React.FC = () => {
                                 />
                               </svg>
                             </button>
-                            <button className="btn btn-outline btn-error">
+                            <button
+                              disabled={deleteMutation.isPending}
+                              onClick={() => deleteMutation.mutate(income._id)}
+                              className="btn btn-outline btn-error"
+                            >
                               <svg
                                 xmlns="http://www.w3.org/2000/svg"
                                 fill="none"

@@ -10,6 +10,7 @@ type T = {
 }
 
 type Transaction = {
+  _id: string
   user: string
   date: Date
   amount: number
@@ -23,6 +24,11 @@ const createTransaction = async (data: T) => {
   return res.data
 }
 
+const deleteTransaction = async (id: string) => {
+  const res = await api.delete('/transaction/' + id)
+  return res.data
+}
+
 const getAllExpenses = async () => {
   const res = await api.get<BaseResponse<Array<Transaction>>>('/transaction/expenses')
   return res.data
@@ -33,4 +39,4 @@ const getAllIncomes = async () => {
   return res.data
 }
 
-export { createTransaction, getAllExpenses, getAllIncomes }
+export { createTransaction, getAllExpenses, getAllIncomes, deleteTransaction }
