@@ -44,50 +44,51 @@ const createTransaction = asyncHandler(async (req, res) => {
   }
 })
 
-const loginUser = asyncHandler(async (req, res) => {
-  const { email, password } = req.body
+const getAllIncomes = asyncHandler(async (req, res) => {
+  const user = await User.findOne({ _id: req.user._id })
 
-  const user = await User.findOne({ email })
-
-  if (user && (await user.comparePassword(password))) {
-    genToken(res, user._id)
-
-    res.status(200).json({
-      status: 'OK',
-      message: 'User login successfully',
-      data: {
-        _id: user._id,
-        name: user.name,
-        email: user.email
-      }
-    })
-  } else {
-    res.status(401)
-    throw new Error('Invalid email or password')
-  }
-})
-
-const getLoggedInUser = asyncHandler(async (req, res) => {
-  const user = await User.findById(req.user._id)
+  const incomes = await Transaction.find({ type: 'income', user: user })
 
   if (user) {
-    res.status(200).json({
-      status: 'OK',
-      message: 'User found successfully',
-      data: {
-        _id: user._id,
-        name: user.name,
-        email: user.email,
-        monthlyBudget: user.monthlyBudget
-      }
-    })
+    if (incomes)
+      res.status(200).json({
+        status: 'OK',
+        message: 'Incomes fetched successfully!',
+        data: incomes
+      })
+    else {
+      res.status(401)
+      throw new Error('Incomes not found')
+    }
   } else {
-    res.status(404)
-    throw new Error('User Not Found')
+    res.status(401)
+    throw new Error('User not found')
   }
 })
 
-const updateUserDetails = asyncHandler(async (req, res) => {
+const getAllExpenses = asyncHandler(async (req, res) => {
+  const user = await User.findOne({ _id: req.user._id })
+
+  const incomes = await Transaction.find({ type: 'expense', user: user })
+
+  if (user) {
+    if (incomes)
+      res.status(200).json({
+        status: 'OK',
+        message: 'Incomes fetched successfully!',
+        data: incomes
+      })
+    else {
+      res.status(401)
+      throw new Error('Incomes not found')
+    }
+  } else {
+    res.status(401)
+    throw new Error('User not found')
+  }
+})
+
+const removeTransaction = asyncHandler(async (req, res) => {
   const user = await User.findById(req.user._id)
 
   if (user) {
@@ -121,7 +122,7 @@ const updateUserDetails = asyncHandler(async (req, res) => {
   }
 })
 
-const deleteUser = asyncHandler(async (req, res) => {
+const updateTransaction = asyncHandler(async (req, res) => {
   const user = await User.findById(req.user._id)
   const { password } = req.body
 
@@ -142,7 +143,7 @@ const deleteUser = asyncHandler(async (req, res) => {
   }
 })
 
-const logoutUser = asyncHandler(async (req, res) => {
+const getTransaction = asyncHandler(async (req, res) => {
   res.cookie('jwt', '', {
     httpOnly: true,
     expiresIn: new Date(0)
@@ -155,4 +156,4 @@ const logoutUser = asyncHandler(async (req, res) => {
   })
 })
 
-export { createTransaction }
+export { createTransaction, getAllExpenses, getAllIncomes, getTransaction, updateTransaction, removeTransaction }

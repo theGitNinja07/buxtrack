@@ -1,10 +1,12 @@
 import React, { ChangeEvent, useState } from 'react'
 import Modal from '../components/Model'
 import CustomInput from '../components/CustomInput'
-import { useMutation } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { AxiosError } from 'axios'
 import toast from 'react-hot-toast'
-import { createTransaction } from '../services/transaction'
+import { createTransaction, getAllExpenses } from '../services/transaction'
+import { format } from 'date-fns'
+import Loader from '../components/Loader'
 
 const Expenses: React.FC = () => {
   const [open, setOpen] = useState(false)
@@ -13,12 +15,19 @@ const Expenses: React.FC = () => {
   const [category, setCategory] = useState('')
   const [paymentMethod, setPaymentMethod] = useState('')
 
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ['expenses'],
+    queryFn: getAllExpenses
+  })
+
+  const queryClient = useQueryClient()
+
   const createMutation = useMutation({
     mutationFn: createTransaction,
     onSuccess(data) {
       toast.success(data.message)
       setOpen(false)
-      console.log(data)
+      queryClient.invalidateQueries()
     },
     onError(error) {
       if (error instanceof AxiosError) {
@@ -49,6 +58,10 @@ const Expenses: React.FC = () => {
     })
   }
 
+  if (isError) {
+    return <>Error fetching expenses</>
+  }
+
   return (
     <>
       <main className="px-8 mx-auto max-w-screen-2xl">
@@ -59,6 +72,71 @@ const Expenses: React.FC = () => {
           <button onClick={() => setOpen(true)} className="btn btn-outline btn-error">
             Add Expense
           </button>
+        </div>
+        <div className="my-8">
+          <div className="overflow-x-auto">
+            {isLoading ? (
+              <Loader />
+            ) : (
+              <table className="table table-zebra">
+                <thead>
+                  <tr>
+                    <th></th>
+                    <th>Date</th>
+                    <th>Category</th>
+                    <th>Amount</th>
+                    <th>Payment Method</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {data?.data.map((exp, idx) => {
+                    return (
+                      <React.Fragment key={idx}>
+                        <tr>
+                          <th>{idx + 1}</th>
+                          <td>{format(new Date(exp.date), 'dd-MMM-yyyy')}</td>
+                          <td>{exp.category}</td>
+                          <td>${exp.amount}</td>
+                          <td>{exp.paymentMethod}</td>
+                          <td className="flex items-center gap-3">
+                            <button className="btn btn-outline btn-success">
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                strokeWidth={1.5}
+                                stroke="currentColor"
+                                className="w-5 h-5"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.832 19.82a4.5 4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 0 1 1.13-1.897L16.863 4.487Zm0 0L19.5 7.125"
+                                />
+                              </svg>
+                            </button>
+                            <button className="btn btn-outline btn-error">
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                strokeWidth={1.5}
+                                stroke="currentColor"
+                                className="w-5 h-5"
+                              >
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
+                              </svg>
+                            </button>
+                          </td>
+                        </tr>
+                      </React.Fragment>
+                    )
+                  })}
+                </tbody>
+              </table>
+            )}
+          </div>
         </div>
       </main>
       <Modal
