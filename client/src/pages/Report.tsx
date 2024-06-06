@@ -5,6 +5,7 @@ import Loader from '../components/Loader'
 import { UserContext } from '../context/userContext'
 import jsPDF from 'jspdf'
 import html2canvas from 'html2canvas-pro'
+import { format } from 'date-fns'
 
 const Report: React.FC = () => {
   const { user } = useContext(UserContext)
@@ -42,19 +43,9 @@ const Report: React.FC = () => {
         heightLeft -= pageHeight
       }
 
-      pdf.save('download.pdf')
+      pdf.save(`report-${format(new Date(), 'dd-MMM-yyyy')}.pdf`)
     }
   }
-
-  // const printDocument = () => {
-  //   const input = document.getElementById('divToPrint')!
-  //   html2canvas(input).then((canvas) => {
-  //     const imgData = canvas.toDataURL('image/png')
-  //     const pdf = new jsPDF()
-  //     pdf.addImage(imgData)
-  //     pdf.save('download.pdf')
-  //   })
-  // }
 
   const genIncomeRep = () => {
     return INCOME_CAT.map((cat) => {
@@ -91,10 +82,10 @@ const Report: React.FC = () => {
 
   return (
     <main className="px-8 mx-auto max-w-screen-2xl">
-      <div className="mt-12 mb-4">
+      <div className="flex items-center justify-between gap-3 mt-12 mb-4 btn-accent">
         <h1 className="text-2xl font-bold">Hello, {user?.name}</h1>
         <button onClick={generatePDF} className="btn">
-          Download
+          Download Report
         </button>
       </div>
       <div
@@ -109,7 +100,7 @@ const Report: React.FC = () => {
           <div>
             <h2 className="mb-2 text-lg font-semibold">Incomes</h2>
             <div className="mt-2">
-              <div className="flex items-center p-2 rounded justify-evenly bg-slate-100">
+              <div className="flex items-center p-2 font-semibold rounded justify-evenly bg-slate-100">
                 <span>Category</span>
                 <span>Amount</span>
               </div>
@@ -119,7 +110,7 @@ const Report: React.FC = () => {
                   return (
                     <div
                       key={idx}
-                      className="flex items-center p-2 bg-green-100 border-b border-green-500 rounded justify-evenly"
+                      className="flex items-center p-2 text-sm bg-green-100 border-b border-green-500 rounded justify-evenly"
                     >
                       <span>{item.category}</span>
                       <span>${item.income}</span>
@@ -133,7 +124,7 @@ const Report: React.FC = () => {
           <div>
             <h2 className="mb-2 text-lg font-semibold">Expenses</h2>
             <div className="mt-2">
-              <div className="flex items-center p-2 font-medium rounded justify-evenly bg-slate-100">
+              <div className="flex items-center p-2 font-semibold rounded justify-evenly bg-slate-100">
                 <span>Category</span>
                 <span>Amount</span>
               </div>
@@ -143,7 +134,7 @@ const Report: React.FC = () => {
                   return (
                     <div
                       key={idx}
-                      className="flex items-center p-2 font-medium bg-red-100 border-b border-red-500 rounded justify-evenly"
+                      className="flex items-center p-2 text-sm bg-red-100 border-b border-red-500 rounded justify-evenly"
                     >
                       <span>{item.category}</span>
                       <span>${item.income}</span>
