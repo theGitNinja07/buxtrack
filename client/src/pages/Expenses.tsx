@@ -1,6 +1,10 @@
 import React, { ChangeEvent, useState } from 'react'
 import Modal from '../components/Model'
 import CustomInput from '../components/CustomInput'
+import { useMutation } from '@tanstack/react-query'
+import { AxiosError } from 'axios'
+import toast from 'react-hot-toast'
+import { createTransaction } from '../services/transaction'
 
 const Expenses: React.FC = () => {
   const [open, setOpen] = useState(false)
@@ -8,6 +12,25 @@ const Expenses: React.FC = () => {
   const [amount, setAmount] = useState(0)
   const [category, setCategory] = useState('')
   const [paymentMethod, setPaymentMethod] = useState('')
+
+  const createMutation = useMutation({
+    mutationFn: createTransaction,
+    onSuccess(data) {
+      toast.success(data.message)
+      setOpen(false)
+      console.log(data)
+    },
+    onError(error) {
+      if (error instanceof AxiosError) {
+        toast.error(error.response?.data.message)
+      } else if (error instanceof Error) {
+        toast.error(error.message)
+      } else {
+        console.log('transaction not created!')
+        console.log(error)
+      }
+    }
+  })
 
   const handleNumberChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = parseFloat(event.target.value)
@@ -17,11 +40,12 @@ const Expenses: React.FC = () => {
   }
 
   const handleFormSubmit = () => {
-    console.log({
+    createMutation.mutate({
       date,
       amount,
       category,
-      paymentMethod
+      paymentMethod,
+      type: 'expense'
     })
   }
 
@@ -38,6 +62,7 @@ const Expenses: React.FC = () => {
         </div>
       </main>
       <Modal
+        isLoading={createMutation.isPending}
         handleSubmit={handleFormSubmit}
         visible={open}
         onClose={() => setOpen(false)}

@@ -5,11 +5,20 @@ interface ModalProps {
   text?: string
   children: React.ReactNode
   visible: boolean
+  isLoading: boolean
   onClose?: () => void
   handleSubmit?: () => void
 }
 
-const Modal: React.FC<ModalProps> = ({ visible, onClose, text, title, children, handleSubmit: formsubmit }) => {
+const Modal: React.FC<ModalProps> = ({
+  visible,
+  onClose,
+  text,
+  title,
+  children,
+  handleSubmit: formsubmit,
+  isLoading
+}) => {
   const modalRef = useRef<HTMLDialogElement>(null)
 
   useEffect(() => {
@@ -45,8 +54,8 @@ const Modal: React.FC<ModalProps> = ({ visible, onClose, text, title, children, 
         {text && <p className="py-4">{text}</p>}
         {children}
         <div className="modal-action">
-          <button type="submit" className="btn btn-success">
-            Save
+          <button disabled={isLoading} type="submit" className="btn btn-success">
+            {isLoading ? 'Saving...' : 'Save'}
           </button>
           <button formMethod="dialog" type="button" className="btn btn-error" onClick={handleClose}>
             Close

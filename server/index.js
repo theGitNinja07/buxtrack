@@ -6,6 +6,7 @@ import path from 'path'
 import connectDB from './db/db.connect.js'
 import { errorHandler, notFound } from './middlewares/error.middleware.js'
 import AuthRoutes from './routes/auth.routes.js'
+import TransactionRoutes from './routes/transaction.routes.js'
 import cookieParser from 'cookie-parser'
 
 dotenv.config()
@@ -42,6 +43,7 @@ app.get('/api/v1/test', (req, res) =>
 )
 
 app.use('/api/v1/auth', AuthRoutes)
+app.use('/api/v1/transaction', TransactionRoutes)
 
 const location = path.resolve()
 console.log(process.env.NODE_ENV)
