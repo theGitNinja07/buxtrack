@@ -6,13 +6,15 @@ import {
   getAllTransactions,
   getTransaction,
   removeTransaction,
-  updateTransaction
+  updateTransaction,
+  getLatestTransactions
 } from './../controllers/transaction.controller.js'
 import express from 'express'
 
 const router = express.Router()
 
 router.route('/').get(protect, getAllTransactions)
+router.route('/latest').get(protect, getLatestTransactions)
 router.route('/create').post(protect, createTransaction)
 router.route('/incomes').get(protect, getAllIncomes)
 router.route('/expenses').get(protect, getAllExpenses)

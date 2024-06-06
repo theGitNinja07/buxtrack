@@ -66,6 +66,28 @@ const getAllTransactions = asyncHandler(async (req, res) => {
   }
 })
 
+const getLatestTransactions = asyncHandler(async (req, res) => {
+  const user = await User.findOne({ _id: req.user._id })
+
+  const transactions = await Transaction.find({ user: user }).sort({ createdAt: -1 }).limit(7)
+
+  if (user) {
+    if (transactions)
+      res.status(200).json({
+        status: 'OK',
+        message: 'transactions fetched successfully!',
+        data: transactions
+      })
+    else {
+      res.status(401)
+      throw new Error('data not found')
+    }
+  } else {
+    res.status(401)
+    throw new Error('User not found')
+  }
+})
+
 const getAllIncomes = asyncHandler(async (req, res) => {
   const user = await User.findOne({ _id: req.user._id })
 
@@ -91,18 +113,18 @@ const getAllIncomes = asyncHandler(async (req, res) => {
 const getAllExpenses = asyncHandler(async (req, res) => {
   const user = await User.findOne({ _id: req.user._id })
 
-  const incomes = await Transaction.find({ type: 'expense', user: user })
+  const exps = await Transaction.find({ type: 'expense', user: user })
 
   if (user) {
-    if (incomes)
+    if (exps)
       res.status(200).json({
         status: 'OK',
-        message: 'Incomes fetched successfully!',
-        data: incomes
+        message: 'expenses fetched successfully!',
+        data: exps
       })
     else {
       res.status(401)
-      throw new Error('Incomes not found')
+      throw new Error('exps not found')
     }
   } else {
     res.status(401)
@@ -149,16 +171,20 @@ const updateTransaction = asyncHandler(async (req, res) => {
 })
 
 const getTransaction = asyncHandler(async (req, res) => {
-  res.cookie('jwt', '', {
-    httpOnly: true,
-    expiresIn: new Date(0)
-  })
+  const user = await User.findById(req.user._id)
 
-  res.status(200).json({
-    status: 'OK',
-    message: 'Logged out successfully!',
-    data: null
-  })
+  if (user) {
+    const transaction = await Transaction.findById(req.params.id)
+
+    res.status(200).json({
+      status: 'OK',
+      message: 'transaction found successfully',
+      data: transaction
+    })
+  } else {
+    res.status(404)
+    throw new Error('User Not Found')
+  }
 })
 
 export {
@@ -168,5 +194,6 @@ export {
   getTransaction,
   updateTransaction,
   removeTransaction,
-  getAllTransactions
+  getAllTransactions,
+  getLatestTransactions
 }

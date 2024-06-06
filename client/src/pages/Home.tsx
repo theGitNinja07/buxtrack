@@ -1,22 +1,18 @@
 import { useQuery } from '@tanstack/react-query'
 import React, { useContext } from 'react'
-import api from '../services/api'
-import { BaseResponse } from '../types/BaseResponse'
 import Loader from '../components/Loader'
 import { UserContext } from '../context/userContext'
+import { getLatestTransactions } from '../services/transaction'
 
 const Home: React.FC = (): React.ReactElement => {
   const { user } = useContext(UserContext)
 
-  const queryFn = async () => {
-    const res = await api.get<BaseResponse<Array<{ name: string; age: number }>>>('/test')
-    return res.data
-  }
-
   const { data, isError, isLoading } = useQuery({
-    queryKey: ['test'],
-    queryFn
+    queryKey: ['latest'],
+    queryFn: getLatestTransactions
   })
+
+  console.log(data?.data)
 
   if (isLoading) {
     return <Loader />
@@ -35,7 +31,7 @@ const Home: React.FC = (): React.ReactElement => {
         {data?.data.map((item, idx) => {
           return (
             <div key={idx}>
-              {item.name} - {item.age}
+              {item.category} - {item.amount}
             </div>
           )
         })}
