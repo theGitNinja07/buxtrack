@@ -4,7 +4,7 @@ import CustomInput from '../components/CustomInput'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { AxiosError } from 'axios'
 import toast from 'react-hot-toast'
-import { createTransaction, getAllExpenses } from '../services/transaction'
+import { createTransaction, deleteTransaction, getAllExpenses } from '../services/transaction'
 import { format } from 'date-fns'
 import Loader from '../components/Loader'
 
@@ -21,6 +21,24 @@ const Expenses: React.FC = () => {
   })
 
   const queryClient = useQueryClient()
+
+  const deleteMutation = useMutation({
+    mutationFn: deleteTransaction,
+    onSuccess(data) {
+      toast.success(data.message)
+      queryClient.invalidateQueries()
+    },
+    onError(error) {
+      if (error instanceof AxiosError) {
+        toast.error(error.response?.data.message)
+      } else if (error instanceof Error) {
+        toast.error(error.message)
+      } else {
+        console.log('transaction not created!')
+        console.log(error)
+      }
+    }
+  })
 
   const createMutation = useMutation({
     mutationFn: createTransaction,
@@ -116,7 +134,11 @@ const Expenses: React.FC = () => {
                                 />
                               </svg>
                             </button>
-                            <button className="btn btn-outline btn-error">
+                            <button
+                              onClick={() => deleteMutation.mutate(exp._id)}
+                              disabled={deleteMutation.isPending}
+                              className="btn btn-outline btn-error"
+                            >
                               <svg
                                 xmlns="http://www.w3.org/2000/svg"
                                 fill="none"
