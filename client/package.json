@@ -14,10 +14,12 @@
     "@tanstack/react-query-devtools": "^5.35.1",
     "axios": "^1.6.8",
     "buxtrack": "file:..",
+    "chart.js": "^4.4.3",
     "date-fns": "^3.6.0",
     "html2canvas-pro": "^1.5.0",
     "jspdf": "^2.5.1",
     "react": "^18.2.0",
+    "react-chartjs-2": "^5.2.0",
     "react-dom": "^18.2.0",
     "react-hot-toast": "^2.4.1",
     "react-router-dom": "^6.23.0"
