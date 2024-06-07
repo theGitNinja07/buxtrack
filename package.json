@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "cd server && npm run test",
+    "test": "cd server && npm i && npm run test",
     "dev:client": "cd client && npm run dev",
     "dev:server": "cd server && nodemon index.js",
     "dev": "concurrently \"npm run dev:server\" \"npm run dev:client\"",
