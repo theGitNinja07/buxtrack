@@ -81,7 +81,7 @@ const Home: React.FC = (): React.ReactElement => {
   return (
     <main className="px-8 mx-auto max-w-screen-2xl">
       <div className="my-8">
-        <h1 className="text-2xl font-semibold">Hello, {user?.name}</h1>
+        <h1 className="text-2xl font-semibold">Hello there, {user?.name}</h1>
       </div>
       <div className="flex flex-col gap-6 lg:flex-row lg:items-center">
         <div className="w-full overflow-x-auto">
